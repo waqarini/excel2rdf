@@ -62,7 +62,7 @@ public class excel2rdf extends CmdGeneral {
             Query query = QueryFactory.create(loadQuery(queryFile));
             QueryExecution queryExec = QueryExecutionFactory.create(query, model);
             Model results = queryExec.execConstruct();
-            model.write(System.out, "TURTLE");
+            //model.write(System.out, "TURTLE");
             results.write(System.out, "TURTLE");
         } catch (Exception ex) {
             Logger.getLogger(excel2rdf.class.getName()).log(Level.SEVERE, null, ex);
