@@ -31,6 +31,7 @@ public class XLS2RDF {
 
     public Model read() {
         Model model = ModelFactory.createDefaultModel();
+        model.setNsPrefix("excel", EXCEL.getURI());
         try {
             FileInputStream xlFile = new FileInputStream(new File(fileName));
             HSSFWorkbook workbook = new HSSFWorkbook(xlFile);
@@ -54,13 +55,15 @@ public class XLS2RDF {
         String down = down(cell);
         String left = left(cell);
         String right = right(cell);
+        String row = Integer.toString(cell.getRowIndex()+1);
+        String column = String.valueOf((char)(cell.getColumnIndex()+65));
         String ref = cellRef.formatAsString().replace("$", "");
         String bgColor = getColor((HSSFColor) cell.getCellStyle().getFillBackgroundColorColor());
         String fgColor = getColor((HSSFColor) cell.getCellStyle().getFillForegroundColorColor());
         Resource resource = model.createResource(sheetName + "#" + ref);
         resource.addProperty(RDF.type, EXCEL.cell);
-        // resource.addProperty(EXCEL.row, );
-        //resource.addProperty(EXCEL.column, );
+        resource.addProperty(EXCEL.row,row );
+        resource.addProperty(EXCEL.column,column);
         resource.addProperty(EXCEL.value, value);
         resource.addProperty(EXCEL.sheet, model.createResource(sheetName));
         resource.addProperty(EXCEL.value, value);
@@ -141,7 +144,7 @@ public class XLS2RDF {
             if(r>235) return "White";
             if(r==16) return "Gray";
             short p = (short) (((r-16)/235.0)*100);
-            return "Gray_"+p+"% ";
+            return "Gray-"+p+"%";
         }
        
         if (b==0 && g==0) return "Red";

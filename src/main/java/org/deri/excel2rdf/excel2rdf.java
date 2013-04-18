@@ -22,17 +22,16 @@ public class excel2rdf extends CmdGeneral {
     public static void main(String... args) {
         new excel2rdf(args).mainRun();
     }
-    
     private String queryFile;
     private String xlsFile;
-    private Model resultModel = ModelFactory.createDefaultModel();
-
+   
     public excel2rdf(String[] args) {
         super(args);
         getUsage().startCategory("Options");
         getUsage().startCategory("Main arguments");
-        getUsage().addUsage("query.sparql", "File containing a SPARQL query to be applied to a excel file");
         getUsage().addUsage("table.xls", "Excel file to be processed");
+        getUsage().addUsage("query.sparql", "Optional file containing a SPARQL CONSTRUCT query to be applied to a excel file");
+
     }
 
     @Override
@@ -42,29 +41,37 @@ public class excel2rdf extends CmdGeneral {
 
     @Override
     protected String getSummary() {
-        return getCommandName() + " query.sparql table.xls ";
+        return getCommandName() + " table.xls [query.sparql]";
     }
 
     @Override
     protected void processModulesAndArgs() {
-        if (getPositional().size() < 2) {
+        if (getPositional().size() < 1) {
             doHelp();
         }
-        queryFile = getPositionalArg(0);
-        xlsFile = getPositionalArg(1);
+        if (getPositional().size() == 2) {
+            queryFile = getPositionalArg(1);
+            xlsFile = getPositionalArg(0);
+        } else {
+            queryFile = null;
+            xlsFile = getPositionalArg(0);
+        }
     }
 
     @Override
     protected void exec() {
         try {
-            resultModel.setNsPrefix("excel", EXCEL.getURI());
             XLS2RDF xlsToRDF = new XLS2RDF(xlsFile);
             Model model = xlsToRDF.read();
-            Query query = QueryFactory.create(loadQuery(queryFile));
-            QueryExecution queryExec = QueryExecutionFactory.create(query, model);
-            Model results = queryExec.execConstruct();
-            //model.write(System.out, "TURTLE");
-            results.write(System.out, "TURTLE");
+            if (queryFile != null) {
+                Query query = QueryFactory.create(loadQuery(queryFile));
+                QueryExecution queryExec = QueryExecutionFactory.create(query, model);
+                Model results = queryExec.execConstruct();
+                results.write(System.out, "TURTLE");
+            }else {
+                model.write(System.out, "TURTLE");
+            }
+            
         } catch (Exception ex) {
             Logger.getLogger(excel2rdf.class.getName()).log(Level.SEVERE, null, ex);
         }
