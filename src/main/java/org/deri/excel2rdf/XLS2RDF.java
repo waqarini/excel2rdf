@@ -1,5 +1,6 @@
 package org.deri.excel2rdf;
 
+import org.deri.excel2rdf.vocab.EXCEL;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;

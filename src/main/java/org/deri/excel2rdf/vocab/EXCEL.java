@@ -1,5 +1,5 @@
 
-package org.deri.excel2rdf;
+package org.deri.excel2rdf.vocab;
 
 import com.hp.hpl.jena.rdf.model.Model;
 import com.hp.hpl.jena.rdf.model.ModelFactory;

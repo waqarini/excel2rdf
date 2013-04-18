@@ -1,5 +1,6 @@
 package org.deri.excel2rdf;
 
+import org.deri.excel2rdf.vocab.EXCEL;
 import arq.cmdline.CmdGeneral;
 import com.hp.hpl.jena.query.Query;
 import com.hp.hpl.jena.query.QueryExecution;
