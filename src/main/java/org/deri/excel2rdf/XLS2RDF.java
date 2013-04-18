@@ -136,16 +136,16 @@ public class XLS2RDF {
         short b = color.getTriplet()[2];
         
         if(r==g && g==b){
-            if(r<16) return "black";
-            if(r>235) return "white";
-            if(r==16) return "gray";
+            if(r<16) return "Black";
+            if(r>235) return "White";
+            if(r==16) return "Gray";
             short p = (short) (((r-16)/235.0)*100);
-            return "gray_"+p+"% ";
+            return "Gray_"+p+"% ";
         }
        
-        if (b==0 && g==0) return "red";
-        if (b==0 && r==0) return "green";
-        if (g==0 && r==0) return "blue";
+        if (b==0 && g==0) return "Red";
+        if (b==0 && r==0) return "Green";
+        if (g==0 && r==0) return "Blue";
        
         StringBuilder sb = new StringBuilder( 7 );
         sb.append( '#' );
