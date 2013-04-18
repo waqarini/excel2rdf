@@ -54,8 +54,8 @@ public class XLS2RDF {
         String left = left(cell);
         String right = right(cell);
         String ref = cellRef.formatAsString().replace("$", "");
-        String bgColor = ((HSSFColor) cell.getCellStyle().getFillBackgroundColorColor()).getHexString();
-        String fgColor = ((HSSFColor) cell.getCellStyle().getFillForegroundColorColor()).getHexString();
+        String bgColor = getColor((HSSFColor) cell.getCellStyle().getFillBackgroundColorColor());
+        String fgColor = getColor((HSSFColor) cell.getCellStyle().getFillForegroundColorColor());
         Resource resource = model.createResource(sheetName + "#" + ref);
         resource.addProperty(RDF.type, EXCEL.cell);
         // resource.addProperty(EXCEL.row, );
@@ -126,5 +126,30 @@ public class XLS2RDF {
             }
 
         }
+    }
+    
+    public static String getColor( HSSFColor color )
+    {
+       
+        short r = color.getTriplet()[0];
+        short g = color.getTriplet()[1];
+        short b = color.getTriplet()[2];
+        
+        if(r==g && g==b){
+            if(r<16) return "black";
+            if(r>235) return "white";
+            if(r==16) return "gray";
+            short p = (short) (((r-16)/235.0)*100);
+            return "gray_"+p+"% ";
+        }
+       
+        if (b==0 && g==0) return "red";
+        if (b==0 && r==0) return "green";
+        if (g==0 && r==0) return "blue";
+       
+        StringBuilder sb = new StringBuilder( 7 );
+        sb.append( '#' );
+        for ( short s : color.getTriplet() )sb.append( Integer.toHexString( s ) );
+        return sb.toString();
     }
 }
