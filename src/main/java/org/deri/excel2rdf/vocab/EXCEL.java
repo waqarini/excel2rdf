@@ -24,4 +24,5 @@ public class EXCEL {
     public static final Property down = m.createProperty(uri + "down");
     public static final Property left = m.createProperty(uri + "left");
     public static final Property right = m.createProperty(uri + "right");
+    public static final Property type = m.createProperty(uri + "type");
 }

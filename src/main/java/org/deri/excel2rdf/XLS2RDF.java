@@ -60,6 +60,13 @@ public class XLS2RDF {
         String ref = cellRef.formatAsString().replace("$", "");
         String bgColor = getColor((HSSFColor) cell.getCellStyle().getFillBackgroundColorColor());
         String fgColor = getColor((HSSFColor) cell.getCellStyle().getFillForegroundColorColor());
+        String cellType = null;
+        if(cell.getCellType() == Cell.CELL_TYPE_BLANK) cellType= "BLANK";
+        if(cell.getCellType() == Cell.CELL_TYPE_BOOLEAN) cellType= "BOOLEAN";
+        if(cell.getCellType() == Cell.CELL_TYPE_ERROR) cellType= "ERROR";
+        if(cell.getCellType() == Cell.CELL_TYPE_FORMULA) cellType= "FORMULA";
+        if(cell.getCellType() == Cell.CELL_TYPE_NUMERIC) cellType= "NUMERIC";
+        if(cell.getCellType() == Cell.CELL_TYPE_STRING) cellType= "STRING";
         Resource resource = model.createResource(sheetName + "#" + ref);
         resource.addProperty(RDF.type, EXCEL.cell);
         resource.addProperty(EXCEL.row,row );
@@ -69,10 +76,11 @@ public class XLS2RDF {
         resource.addProperty(EXCEL.value, value);
         resource.addProperty(EXCEL.foregroundColor, fgColor);
         resource.addProperty(EXCEL.backgroundColor, bgColor);
-        if(up!=null)resource.addProperty(EXCEL.up, model.createResource(sheetName+"#"+up));
-        if(down!=null)resource.addProperty(EXCEL.down,model.createResource(sheetName+"#"+ down));
-        if(left!=null)resource.addProperty(EXCEL.left,model.createResource(sheetName+"#"+left));
-        if(right!=null)resource.addProperty(EXCEL.right,model.createResource(sheetName+"#"+right));
+        if(cellType != null)  resource.addProperty(EXCEL.type, cellType);
+        if(up != null)resource.addProperty(EXCEL.up, model.createResource(sheetName+"#"+up));
+        if(down != null)resource.addProperty(EXCEL.down,model.createResource(sheetName+"#"+ down));
+        if(left != null)resource.addProperty(EXCEL.left,model.createResource(sheetName+"#"+left));
+        if(right != null)resource.addProperty(EXCEL.right,model.createResource(sheetName+"#"+right));
 
     }
 
