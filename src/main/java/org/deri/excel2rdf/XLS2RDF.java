@@ -49,7 +49,7 @@ public class XLS2RDF {
 
     private static void processCell(Cell cell, Model model) {
         CellReference cellRef = new CellReference(cell.getRowIndex(), cell.getColumnIndex());
-        String sheetName = EXCEL.getURI()+cell.getSheet().getSheetName();
+        String sheetName = cell.getSheet().getSheetName();
         String value = cell.toString();
         String up = up(cell);
         String down = down(cell);
@@ -72,7 +72,7 @@ public class XLS2RDF {
         resource.addProperty(EXCEL.row,row );
         resource.addProperty(EXCEL.column,column);
         resource.addProperty(EXCEL.value, value);
-        resource.addProperty(EXCEL.sheet, model.createResource(sheetName));
+        resource.addProperty(EXCEL.sheet, model.createResource(EXCEL.getURI()+sheetName));
         resource.addProperty(EXCEL.value, value);
         resource.addProperty(EXCEL.foregroundColor, fgColor);
         resource.addProperty(EXCEL.backgroundColor, bgColor);
