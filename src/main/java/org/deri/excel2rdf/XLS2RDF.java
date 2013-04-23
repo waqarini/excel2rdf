@@ -49,7 +49,7 @@ public class XLS2RDF {
 
     private static void processCell(Cell cell, Model model) {
         CellReference cellRef = new CellReference(cell.getRowIndex(), cell.getColumnIndex());
-        String sheetName = cell.getSheet().getSheetName();
+        String sheetName = EXCEL.getURI()+cell.getSheet().getSheetName();
         String value = cell.toString();
         String up = up(cell);
         String down = down(cell);
