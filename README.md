@@ -20,3 +20,8 @@ excel2rdf is a java based command-line utility to convent excel file to RDF.  Th
       --version              Version information
 
 the project uses maven as build tool.
+
+To create executable scripts for Windows and Unix in `/target/appassembler/bin/tarql`:
+
+    mvn package appassembler:assemble
+

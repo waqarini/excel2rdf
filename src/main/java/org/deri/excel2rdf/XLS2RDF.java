@@ -8,7 +8,7 @@ import com.hp.hpl.jena.graph.Node;
 import com.hp.hpl.jena.rdf.model.Model;
 import com.hp.hpl.jena.rdf.model.ModelFactory;
 import com.hp.hpl.jena.rdf.model.Resource;
-
+import com.hp.hpl.jena.vocabulary.XSD;
 import com.hp.hpl.jena.vocabulary.RDF;
 import java.io.File;
 import java.io.FileInputStream;
@@ -20,6 +20,7 @@ import org.apache.poi.hssf.util.CellReference;
 import org.apache.poi.hssf.util.HSSFColor;
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.Row;
+import java.math.*;
 
 public class XLS2RDF {
 
@@ -32,6 +33,7 @@ public class XLS2RDF {
     public Model read() {
         Model model = ModelFactory.createDefaultModel();
         model.setNsPrefix("excel", EXCEL.getURI());
+        model.setNsPrefix("xsd", XSD.getURI());
         try {
             FileInputStream xlFile = new FileInputStream(new File(fileName));
             HSSFWorkbook workbook = new HSSFWorkbook(xlFile);
@@ -69,7 +71,7 @@ public class XLS2RDF {
         if(cell.getCellType() == Cell.CELL_TYPE_STRING) cellType= "STRING";
         Resource resource = model.createResource(sheetName + "#" + ref);
         resource.addProperty(RDF.type, EXCEL.cell);
-        resource.addProperty(EXCEL.row,row );
+        resource.addProperty(EXCEL.row, model.createTypedLiteral(new BigInteger(row)));
         resource.addProperty(EXCEL.column,column);
         resource.addProperty(EXCEL.value, value);
         resource.addProperty(EXCEL.sheet, model.createResource(EXCEL.getURI()+sheetName));
