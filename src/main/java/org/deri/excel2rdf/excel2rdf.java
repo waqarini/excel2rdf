@@ -31,7 +31,7 @@ public class excel2rdf extends CmdGeneral {
         getUsage().startCategory("Main arguments");
         getUsage().addUsage("table.xls", "Excel file to be processed");
         getUsage().addUsage("query.sparql", "Optional file containing a SPARQL CONSTRUCT query to be applied to a excel file");
-
+        
     }
 
     @Override
