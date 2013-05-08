@@ -4,15 +4,17 @@ excel2rdf is a java based command-line utility to convent excel file to RDF.  Th
 
 ##Command-line
 
-      excel2rdf table.xls [query.sparql]
-
-  Main arguments
-
-      table.xls              Excel file to be processed
-      query.sparql           Optional file containing a SPARQL CONSTRUCT query to be applied to a excel file
+  excel2rdf --input table.xls
 
   Options
-
+      --input                excel file to be used input
+      --enrich               Optional SPARQL file to be used for enrichment
+      --query                Optional SPARQL file with SELECT query
+      --construct            Optional SPARQL file with CONSTRUCT query
+  Symbol definition
+      --set                  Set a configuration symbol to a value
+      --strict               Operate in strict SPARQL mode (no extensions of any kind)
+  General
       -v   --verbose         Verbose
       -q   --quiet           Run with minimal output
       --debug                Output information for debugging

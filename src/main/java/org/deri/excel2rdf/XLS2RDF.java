@@ -59,6 +59,7 @@ public class XLS2RDF {
         String right = right(cell);
         String row = Integer.toString(cell.getRowIndex()+1);
         String column = String.valueOf((char)(cell.getColumnIndex()+65));
+        String columnIndex = Integer.toString(cell.getColumnIndex());
         String ref = cellRef.formatAsString().replace("$", "");
         String bgColor = getColor((HSSFColor) cell.getCellStyle().getFillBackgroundColorColor());
         String fgColor = getColor((HSSFColor) cell.getCellStyle().getFillForegroundColorColor());
@@ -72,6 +73,7 @@ public class XLS2RDF {
         Resource resource = model.createResource(sheetName + "#" + ref);
         resource.addProperty(RDF.type, EXCEL.cell);
         resource.addProperty(EXCEL.row, model.createTypedLiteral(new BigInteger(row)));
+        resource.addProperty(EXCEL.columnIndex, model.createTypedLiteral(new BigInteger(columnIndex)));
         resource.addProperty(EXCEL.column,column);
         resource.addProperty(EXCEL.value, value);
         resource.addProperty(EXCEL.sheet, model.createResource(EXCEL.getURI()+sheetName));
@@ -128,10 +130,11 @@ public class XLS2RDF {
 
     private static void processSheet(HSSFSheet sheet, Model model) {
         Iterator<Row> rowIterator = sheet.iterator();
-        
+        Resource resource = model.createResource(EXCEL.getURI()+sheet.getSheetName());
+        resource.addProperty(RDF.type, EXCEL.Sheet);
         while (rowIterator.hasNext()) {
             Row row = rowIterator.next();
-
+            
             Iterator<Cell> cellIterator = row.cellIterator();
             while (cellIterator.hasNext()) {
 
@@ -150,6 +153,7 @@ public class XLS2RDF {
         short b = color.getTriplet()[2];
         
         if(r==g && g==b){
+            if (r==0) return "White";
             if(r<16) return "Black";
             if(r>235) return "White";
             if(r==16) return "Gray";
