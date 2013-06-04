@@ -25,11 +25,21 @@ import java.math.*;
 public class XLS2RDF {
 
     private final String fileName;
+    private static int maxrows =0;
+    private static int maxcols =0;
 
     public XLS2RDF(String fileName) {
         this.fileName = fileName;
     }
 
+    public static int getMaxRows(){
+        return maxrows;
+    }
+    
+    public static int getMaxCols(){
+        return maxcols;
+    }
+    
     public Model read() {
         Model model = ModelFactory.createDefaultModel();
         model.setNsPrefix("excel", EXCEL.getURI());
@@ -85,7 +95,12 @@ public class XLS2RDF {
         if(down != null)resource.addProperty(EXCEL.down,model.createResource(sheetName+"#"+ down));
         if(left != null)resource.addProperty(EXCEL.left,model.createResource(sheetName+"#"+left));
         if(right != null)resource.addProperty(EXCEL.right,model.createResource(sheetName+"#"+right));
-
+        if (Integer.parseInt(row) > maxrows){
+            maxrows=Integer.parseInt(row);
+        }
+        if (cell.getColumnIndex() > maxcols){
+            maxcols=cell.getColumnIndex();
+        }
     }
 
     private static String down(Cell cell) {
@@ -100,7 +115,7 @@ public class XLS2RDF {
     private static String up(Cell cell) {
         try {
             CellReference cellRef = new CellReference(cell.getRowIndex() - 1, cell.getColumnIndex());
-            if (cellRef.getCol() > 0) {
+            if (cellRef.getRow() > 0) {
                 return cellRef.formatAsString().replace("$", "");
             }
         } catch (Exception e) {
@@ -111,7 +126,7 @@ public class XLS2RDF {
     private static String left(Cell cell) {
         try {
             CellReference cellRef = new CellReference(cell.getRowIndex(), cell.getColumnIndex() - 1);
-            if (cellRef.getRow() > 0) {
+            if (cellRef.getCol() > 0) {
                 return cellRef.formatAsString().replace("$", "");
             }
         } catch (Exception e) {

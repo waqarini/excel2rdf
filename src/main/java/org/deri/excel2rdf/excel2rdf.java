@@ -37,9 +37,7 @@ public class excel2rdf extends CmdARQ {
     private String inputFile;
     private String enrichFile;
     private String constructFile;
-    private final int MAX_ROWS = 65536;
-    private final int MAX_COLS = 256;
-
+    
     public excel2rdf(String[] args) {
         super(args);
         getUsage().startCategory("Options");
@@ -90,10 +88,8 @@ public class excel2rdf extends CmdARQ {
 
             XLS2RDF xlsToRDF = new XLS2RDF(inputFile);
             Model model = xlsToRDF.read();
-
-
             if (enrichFile != null) {
-                enrich(model, enrichFile);
+                enrich(model, enrichFile,xlsToRDF.getMaxRows(),xlsToRDF.getMaxCols());
             }
             
             if (constructFile != null) {
@@ -124,7 +120,7 @@ public class excel2rdf extends CmdARQ {
 
     }
 
-    private void enrich(Model model, String file) throws Exception {
+    private void enrich(Model model, String file,int maxrows, int maxcols) throws Exception {
 
         Query query = QueryFactory.create(loadQuery(file));
         QueryExecution queryExec = QueryExecutionFactory.create(query, model);
@@ -152,10 +148,10 @@ public class excel2rdf extends CmdARQ {
 
                     //findNextUp
                     int r = row + 1;
-                    while (r < MAX_ROWS) {
+                    while (r <= maxrows) {
                         Resource resource = model.getResource(sheet.getLocalName() + "#" + getCellRef(r, icol));
                         Statement t = resource.getProperty(EXCEL.cellType);
-                        if (t != null && !resource.getProperty(EXCEL.cellType).equals(type)) {
+                        if (t != null && resource.getProperty(EXCEL.cellType).getString().equals(type)) {
                             break;
                         }
                         resource.addProperty(EXCEL.findNextUp, cell);
@@ -167,34 +163,34 @@ public class excel2rdf extends CmdARQ {
                     while (r > 0) {
                         Resource resource = model.getResource(sheet.getLocalName() + "#" + getCellRef(r, icol));
                         Statement t = resource.getProperty(EXCEL.cellType);
-                        if (t != null && !resource.getProperty(EXCEL.cellType).equals(type)) {
+                        if (t != null && resource.getProperty(EXCEL.cellType).getString().equals(type)) {
                             break;
                         }
                         resource.addProperty(EXCEL.findNextDown, cell);
                         r--;
                     }
 
-                    //findNextLeft
+                    //findNextRight
                     int c = icol - 1;
-                    while (c > 0) {
-                        Resource resource = model.getResource(sheet.getLocalName() + "#" + getCellRef(r, icol));
+                    while (c >= 0) {
+                        Resource resource = model.getResource(sheet.getLocalName() + "#" + getCellRef(row, c));
                         Statement t = resource.getProperty(EXCEL.cellType);
-                        if (t != null && !resource.getProperty(EXCEL.cellType).equals(type)) {
-                            break;
-                        }
-                        resource.addProperty(EXCEL.findNextLeft, cell);
-                        c--;
-                    }
-
-                    //findNextDown
-                    c = icol + 1;
-                    while (c < MAX_COLS) {
-                        Resource resource = model.getResource(sheet.getLocalName() + "#" + getCellRef(r, icol));
-                        Statement t = resource.getProperty(EXCEL.cellType);
-                        if (t != null && !resource.getProperty(EXCEL.cellType).equals(type)) {
+                        if (t != null && resource.getProperty(EXCEL.cellType).getString().equals(type)) {
                             break;
                         }
                         resource.addProperty(EXCEL.findNextRight, cell);
+                        c--;
+                    }
+
+                    //findNextLeft
+                    c = icol + 1;
+                    while (c <= maxcols) {
+                        Resource resource = model.getResource(sheet.getLocalName() + "#" + getCellRef(row, c));
+                        Statement t = resource.getProperty(EXCEL.cellType);
+                        if (t != null && resource.getProperty(EXCEL.cellType).getString().equals(type)) {
+                            break;
+                        }
+                        resource.addProperty(EXCEL.findNextLeft, cell);
                         c++;
                     }
 

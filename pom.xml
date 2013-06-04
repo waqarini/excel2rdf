@@ -4,7 +4,7 @@
 
   <groupId>org.deri.excel2rdf</groupId>
   <artifactId>excel2rdf</artifactId>
-  <version>0.4</version>
+  <version>0.5</version>
   <packaging>jar</packaging>
 
   <name>excel2rdf</name>
